@@ -557,4 +557,12 @@ int zvol_check_dump_config(/*char **/String _1);
  */
 int zpool_enable_datasets(zpool_handle_t pool, String _2, int _3);
 int zpool_disable_datasets(zpool_handle_t pool, boolean force);
+
+/*
+ * Utility functions for zfs version
+ */
+// since ZoL 0.8
+void zfs_version_userland(byte[] version, int len);
+int zfs_version_kernel(byte[] version, int len);
+int zfs_version_print();
 }

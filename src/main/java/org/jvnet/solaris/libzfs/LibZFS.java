@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.jna.Function;
+import com.sun.jna.Native;
 import org.jvnet.solaris.libzfs.jna.libzfs;
 import org.jvnet.solaris.libzfs.jna.libzfs.zpool_iter_f;
 import org.jvnet.solaris.libzfs.jna.libzfs_handle_t;
@@ -553,6 +554,34 @@ public class LibZFS implements ZFSContainer {
             libzfs_enabled = false;
             libzfsNotEnabledReason = "";
         }
+    }
+
+    /**
+     * Returns the version of libzfs. Works on ZoL since 0.8.
+     * For other zfs implementations returns an empty string.
+     */
+    public String getUserlandVersion() {
+        byte[] str = new byte[128];
+        try {
+            LIBZFS.zfs_version_userland(str, str.length);
+        } catch (UnsatisfiedLinkError ignored) {
+        }
+        return Native.toString(str);
+    }
+
+    /**
+     * Returns the version of kernel zfs module. Works on ZoL since 0.8.
+     * For other zfs implementations returns an empty string.
+     */
+    public String getKernelVersion() {
+        byte[] str = new byte[128];
+        try {
+            if (LIBZFS.zfs_version_kernel(str, str.length) != 0) {
+                throw new ZFSException(this);
+            }
+        } catch (UnsatisfiedLinkError ignored) {
+        }
+        return Native.toString(str);
     }
 
     private static final Logger LOGGER = Logger.getLogger(LibZFS.class.getName());
