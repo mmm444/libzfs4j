@@ -212,7 +212,7 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
         if (abi.equals("NO-OP")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' - skipped due to config");
         } else
-        if (abi.equals("openzfs") || abi.equals("legacy")) {
+        if (abi.equals("openzfs") || abi.equals("openzfs-0.8") || abi.equals("legacy")) {
             /* good for both "openzfs" and "legacy" as we know them today */
             if (LIBZFS.zfs_snapshot(library.getHandle(), fullName, recursive, null) != 0) {
                 throw new ZFSException(library);
@@ -263,7 +263,7 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
         if (abi.equals("NO-OP")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' - skipped due to config");
         } else
-        if (abi.equals("openzfs")) {
+        if (abi.equals("openzfs") || abi.equals("openzfs-0.8")) {
             if (LIBZFS.zfs_destroy(handle,false/*?*/) != 0)
                 throw new ZFSException(library,"Failed to destroy "+getName());
         } else
@@ -297,7 +297,7 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
         if (abi.equals("NO-OP")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' - skipped due to config");
         } else
-        if (abi.equals("openzfs")) {
+        if (abi.equals("openzfs") || abi.equals("openzfs-0.8")) {
             if (LIBZFS.zfs_destroy_snaps(handle, name, false/*?*/) != 0)
                 throw new ZFSException(library,"Failed to destroy "+getName());
         } else
@@ -538,6 +538,15 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
                 }
             }, null);
         } else
+        if (abi.equals("openzfs-0.8")) {
+            LOGGER.log(Level.FINE, "CALLING LIBZFS4J: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' for dataset '" + getName() + "' ...");
+            LIBZFS.zfs_iter_snapshots(handle, false, new libzfs.zfs_iter_f() {
+                public int callback(zfs_handle_t handle, Pointer arg) {
+                    set.add((ZFSSnapshot)ZFSObject.create(library, handle));
+                    return 0;
+                }
+            }, null, 0, 0);
+        } else
         if (abi.equals("legacy")) {
             LOGGER.log(Level.FINE, "CALLING LIBZFS4J: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' for dataset '" + getName() + "' ...");
             LIBZFS.zfs_iter_snapshots(handle, new libzfs.zfs_iter_f() {
@@ -568,7 +577,7 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
         if (abi.equals("NO-OP")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' - skipped due to config");
         } else
-        if (abi.equals("openzfs") || abi.equals("legacy")) {
+        if (abi.equals("openzfs") || abi.equals("openzfs-0.8") || abi.equals("legacy")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' and this is currently not implemented");
         } else
         if (abi.equals("pre-sol10u8")) {
@@ -594,7 +603,7 @@ public abstract class ZFSObject implements Comparable<ZFSObject>, ZFSContainer {
         if (abi.equals("NO-OP")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' - skipped due to config");
         } else
-        if (abi.equals("openzfs") || abi.equals("legacy")) {
+        if (abi.equals("openzfs") || abi.equals("openzfs-0.8") || abi.equals("legacy")) {
             LOGGER.log(Level.FINE, "NO-OP: libzfs4j::" + abi_thisfunc + "() was called while " + abi_toggle + "=='" + abi + "' and this is currently not implemented");
         } else
         if (abi.equals("pre-sol10u8")) {

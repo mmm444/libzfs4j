@@ -192,6 +192,10 @@ public class LibZFS implements ZFSContainer {
      * See https://people.freebsd.org/~gibbs/zfs_doxygenation/html/d4/dd6/zfeature_8h.html
      */
     private String detectCurrentABI() {
+        if (!getUserlandVersion().isEmpty()) {
+            return "openzfs-0.8";
+        }
+
         /* This list was retrieved by running
          *   nm /usr/lib/libzfs.so | grep feature | awk '{print "\""$NF"\","}' | sort
          * on different systems */

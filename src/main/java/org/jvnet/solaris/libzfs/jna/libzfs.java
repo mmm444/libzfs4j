@@ -345,6 +345,8 @@ int zfs_iter_filesystems(zfs_handle_t handle, zfs_iter_f callback, Pointer arg);
 int zfs_iter_snapshots(zfs_handle_t handle, zfs_iter_f callback, Pointer arg);
 /* The OpenZFS function ABI signature since ~2012 (illumos since mid-2016, BSD, ZoL, ...): */
 int zfs_iter_snapshots(zfs_handle_t handle, boolean simple, zfs_iter_f callback, Pointer arg);
+/* since ZoL 0.8.0 */
+int zfs_iter_snapshots(zfs_handle_t handle, boolean simple, zfs_iter_f callback, Pointer arg, long min_txg, long max_txg);
 int zfs_iter_snapshots_sorted(zfs_handle_t handle, zfs_iter_f callback, Pointer arg);
 int zfs_iter_snapspec(zfs_handle_t handle, zfs_iter_f callback, Pointer arg);
 
