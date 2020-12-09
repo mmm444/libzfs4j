@@ -85,6 +85,8 @@
           <compilerArgument>
             -Xlint:unchecked,deprecation
           </compilerArgument>
+          <source>6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
 

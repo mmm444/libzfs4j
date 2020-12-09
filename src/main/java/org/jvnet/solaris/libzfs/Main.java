@@ -14,11 +14,20 @@ public class Main {
             System.out.println("Aborted because " + e.toString());
             return;
         }
+        System.out.println("userland version: " + zfs.getUserlandVersion());
+        System.out.println("kernel version: " + zfs.getKernelVersion());
         for (ZFSFileSystem fs : zfs.roots()) {
-            System.out.println(fs.getName());
-            for (ZFSFileSystem c : fs.children(ZFSFileSystem.class)) {
-                System.out.println(c.getName());
-            }
+            walkFs(fs, "");
+        }
+    }
+
+    private static void walkFs(ZFSFileSystem fs, String prefix) {
+        System.out.println(prefix + fs.getName());
+        for (ZFSSnapshot s : fs.snapshots()) {
+            System.out.println(prefix + " - " + s.getName());
+        }
+        for (ZFSFileSystem c : fs.children(ZFSFileSystem.class)) {
+            walkFs(c, prefix + " ");
         }
     }
 }
